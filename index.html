@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mess">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/angular.js"></script>
+</head>
+<body ng-controller="info">
+    <div class="box">
+        <div class="left">
+            <div class="left-top">
+
+                <nav class=" navbar-default navbar-inverse" role="navigation">
+                    <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand app-brand" href="#"></a>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">提醒事项<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Action</a></li>
+                                        <li><a href="#">Another action</a></li>
+                                        <li><a href="#">Something else here</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Separated link</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">One more separated link</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="#" id="additem" class="iconfont" ng-click="addlist();">+</a></li>
+                            </ul>
+                        </div><!-- /.navbar-collapse -->
+                    </div><!-- /.container-fluid -->
+                </nav>
+
+
+            </div>
+            <ul class="left-bottom">
+                 <li><span style="border-radius: 0"></span><div>已计划</div></li>
+                <color-list  ng-repeat="v in lists"></color-list>
+            </ul>
+        </div>
+        <div class="right">
+           <div class="right-top">
+                <span></span>
+               <input class="search" ng-keyup="searchInfo()" ng-model="search" type="text" placeholder="搜索所有提醒">
+               <div>
+                   <span>闫宣先</span>
+                   <span></span>
+               </div>
+           </div>
+            <div class="right-tit">
+                <span style="color:{{current[0].color}}">{{current[0].name}}</span>
+                <div class="select" style="color:{{current[0].color}}" ng-click="showTit($event)">选项
+                </div>
+            </div>
+            <div class="finish">
+                <ul class="nav navbar-nav" style="width:100%;" id="tit">
+                    <li class="dropdown">
+                        <a href="#" style="margin-left: 30px"   ng-click="aa=!aa"  class="dropdown-toggle" data-toggle="dropdown"><span class="caret" ng-class="{dis:aa}"></span>已完成: <span>{{currentNum()}}</span>项</a>
+                        <a href="#" style="color:{{current[0].color}}" ng-click="delFinish()">清除所有完成事项</a>
+                            <ul class="dropdown-menu show" ng-init="aa=false" id="finishItem"role="menu">
+                                <li ng-class="{hid:aa,change:v.has==1}" ng-repeat="v in current[0].todos|filter:{status:1}">
+                                    <div class="top-line" style="background: {{current[0].color}}"></div>
+                                    <div class="midd-line" style="background: {{current[0].color}}"></div>
+                                    <div style="border-color:{{current[0].color}}" class="outcir"  ng-click="v.status=0">
+                                        <div style="background:{{current[0].color}}" class="incir"></div>
+                                    </div>
+                                    <finish-info></finish-info>
+                                    <span class="delete" ng-click="delCurrent(v.id)"  style="color:{{current[0].color}}" ></span>
+                                    <div class="und-line" style="background: {{current[0].color}}"></div>
+                                </li>
+                                <li class="neverDo"> <a href="#" ng-init="bb=false"  ng-click="bb=!bb"  class="dropdown-toggle" data-toggle="dropdown"><span class="caret" ng-class="{dis:bb}"></span>未完成: <span>{{current[0].todos.length - currentNum()}}</span>项</a></li>
+                                <li  ng-class="{hid:bb,change:v.has==1}" ng-repeat="v in current[0].todos|filter:{status:0}" class="neverinfo">
+                                    <div class="top-line" style="background: {{current[0].color}}"></div>
+                                    <div class="midd-line" style="background: {{current[0].color}}"></div>
+                                    <div class="outcir" style="border-color:{{current[0].color}}" ng-click="v.status=1">
+                                        <div class="incir"></div>
+                                    </div>
+                                    <finish-info></finish-info>
+                                    <span class="delete" style="color:{{current[0].color}}" ng-click="delCurrent(v.id)"></span>
+                                    <div class="und-line" style="background: {{current[0].color}}"></div>
+                                </li>
+                                <li  class="addinfo" >
+                                    <div class="top-line" style="background: {{current[0].color}}"></div>
+                                    <div class="midd-line" style="background: {{current[0].color}}"></div>
+                                    <input type="text" ng-keyup="addinfo($event)">
+                                    <div class="und-line" style="background: {{current[0].color}}"></div>
+                                </li>
+                                <li class="addbtn" ng-click="addshow($event)"><input type="text" placeholder="新项目" disabled></li>
+                            </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="never">
+            </div>
+
+        </div>
+        <div class="tan">
+            <div class="tan-box">
+                <input type="text" maxlength="8" style="color:{{current[0].color}}" maxlength="10" value="{{current[0].name}}">
+                <p>列表颜色</p>
+                <ul>
+                    <color-li ng-click="xz($index)" ng-repeat="v in color"></color-li>
+                </ul>
+                <div class="btns">
+                    <div><a href="#" ng-click="delInfo(current[0].id)">删除</a></div>
+                    <div>
+                        <a href="#" ng-click="hideTan($event)">取消</a><a href="javascript:;" ng-click="comTan($event)">完成</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="res-sear">
+
+        </div>
+    </div>
+</body>
+<script>
+
+     mess = angular.module("mess",[]);
+     mess.controller("info",["$scope",function($scope){
+         $scope.lists=[{id:1,name:"默认",color:"#04ACF6",todos:[{id:1,info:"吃饭",status:0,has:0},{id:2,info:"睡觉",status:1,has:0}]}];
+         $scope.current=[];
+         $scope.search=""
+         $scope.searchInfo = function(){
+             $scope.reg = new RegExp($scope.search,"g");
+             if($scope.search == ""){
+                 var a = $scope.current[0].todos.forEach(function(v){
+                    v.has=0
+                     console.log($scope.current[0].todos)
+                 })
+             }else{
+                 var a = $scope.current[0].todos.forEach(function(v){
+                     if($scope.reg.test(v.info)){
+                         v.has = 1;
+                     }else{
+                         v.has = 0;
+                     }
+                     console.log($scope.current[0].todos)
+                 })
+             }
+
+         }
+         $scope.current.push($scope.lists[0]);
+         $scope.color=["#04ACF6","#56D75E","#EFCB41","#A57D59","#FF2369","#FD7830","#CB7AD7","#FE7C29"];
+          $scope.xz=function(index){
+              $(".tan .tan-box ul li").removeClass("show");
+              $scope.current[0].color=$scope.color[index]
+              $(".tan .tan-box ul li").eq(index).addClass("show")
+          }
+          $scope.addlist=function(){
+              var newid = 0 ;
+              $scope.lists.forEach(function(v,i){
+                  if( newid <= parseInt(v.id)){
+                      newid = parseInt(v.id);
+                  }
+              })
+              var colorindex = (newid) % $scope.color.length;
+              var color = $scope.color[colorindex];
+              var name = "新列表" + ( $scope.lists.length + 1 )
+              var newitem = {id:newid+1,name:name,color:color,todos:[]};
+              $scope.lists.push(newitem)
+          };
+          $scope.changeCurrent=function(id){
+              $scope.current=$scope.lists.filter(function(v){
+                  return   v.id == id
+              })
+          };
+          $scope.addinfo=function(e){
+             e.stopPropagation()
+             if(e.keyCode == 13){
+                 var newid = 0 ;
+                 $scope.current[0].todos.forEach(function(v,i){
+                     if( newid <= parseInt(v.id)){
+                         newid = parseInt(v.id);
+                     }
+                 })
+                 var val = $(".addinfo input").val();
+                 $(".addinfo input").val("");
+                 $scope.current[0].todos.push({id:newid+1,info:val,status:0})
+             }
+
+         };
+          $scope.delCurrent=function(id){
+            console.log($scope.current[0].todos)
+            $scope.current[0].todos=$scope.current[0].todos.filter(function(v){
+                console.log(id,v.id)
+                return  parseInt(v.id) !== id;
+            })
+            console.log($scope.current[0].todos)
+        };
+          $scope.addshow=function(event){
+             event.stopPropagation()
+             $(".addinfo").addClass("show change");
+             $(".addinfo input").focus()
+
+         };
+          $(document).on("click",function(){
+              if($(".addinfo input").val() !== ""){
+                  var newid = 0 ;
+                  $scope.$apply(function(){
+                      $scope.current[0].todos.forEach(function(v,i){
+                          if( newid <= parseInt(v.id)){
+                              newid = parseInt(v.id);
+                          }
+                      });
+                      var val = $(".addinfo input").val();
+                      $(".addinfo input").val("");
+                      $scope.current[0].todos.push({id:newid+1,info:val,status:0})
+
+                  })
+              }
+             $(".addinfo").removeClass("show")
+             $(".tan").removeClass("show");
+         });
+          $scope.showTit=function(e){
+            e.preventDefault()
+            e.stopPropagation()
+            $(".tan").toggleClass("show");
+        };
+          $scope.hideTan=function(e){
+             e.preventDefault();
+             $(".tan").removeClass("show");
+         };
+          $(".tan").on("click",false);
+          $scope.comTan=function(e){
+             e.preventDefault();
+             var newid = 0 ;
+             $scope.lists.forEach(function(v,i){
+                 if( newid <= parseInt(v.id)){
+                     newid = parseInt(v.id);
+                 }
+             });
+             var colorindex = $(".tan .tan-box ul .show").index();
+             var color = $scope.color[colorindex];
+//              console.log(color,colorindex)
+             var name = $(".tan").find("input").val();
+
+              $scope.current[0].color = color
+              $scope.current[0].name = name
+             $(".tan").removeClass("show");
+         }
+          $scope.delInfo=function(id){
+              if(id == 1){
+                  alert("默认列表不可删除");
+                  $(".tan").removeClass("show")
+                  return;
+              }else{
+                  $scope.lists = $scope.lists.filter(function(v){
+                      return v.id!=id
+                  })
+                  $scope.current[0] = $scope.lists[0]
+                  $(".tan").removeClass("show")
+              }
+          }
+          $scope.currentNum=function(){
+              var i = [];
+             i =  $scope.current[0].todos.filter(function(v,i){
+                return v.status != 0
+              })
+              return i.length
+          }
+          $scope.delFinish=function(){
+              $scope.current[0].todos = $scope.current[0].todos.filter(function(v){
+                  return v.status==0;
+              })
+          }
+          $scope.hidNew=function(){
+             console.log(23456)
+             $(".addinfo").removeClass("show change")
+         }
+
+     }]);
+     mess.directive("colorList",function(){
+         return {
+             restrict:"AE",
+             template:'<li incolor="{{v.color}}" ng-click="changeCurrent(v.id)" data-id="{{v.id}}"><span style="background:{{v.color}}"></span><div ng-model="v.name"><span>{{v.name}}</span><input type="text" maxlength="10" ng-model="v.name"><span></span></div></li>',
+             replace:true,
+             link:function(scope,el){
+                 $(el).on("dblclick",function(e){
+                     e.preventDefault();
+                     $(this).parent().find("li").removeClass("active");
+                     $(this).addClass("active");
+                     $(this).find("input").focus();
+                 });
+                 $(el).on("click",function(e){
+                     e.preventDefault();
+                     $(this).parent().find("li").removeClass("select");
+                     $(this).addClass("select");
+
+                 });
+                 $(el).on("blur","input",function(){
+                     var con = $(this).val();
+                     $(this).closest("li").removeClass("active");
+                 });
+                 $(el).on("change","input",function(){
+                 });
+                 $(document).on("keyup",function(e){
+                    if(e.keyCode == 46){
+                        var idname = $(el).closest("ul").find(".select").attr("data-id")
+                            if(idname == 1){
+                                alert("默认列表不可删除")
+                                return;
+                            }else{
+                            $(el).closest("ul").find(".select").remove()
+                            scope.$apply(function(){
+                                scope.lists =scope.lists.filter(function(v){
+                                    return v.id != idname
+                                })
+                            });
+                               scope.current[0] = scope.lists[0]
+                            }
+                     }
+                 })
+             }
+         }
+     })
+     mess.directive("finishInfo",[function(){
+        return {
+            restrict:"AE",
+            template:'<input type="text" ng-model="v.info">',
+                replace:true,
+                link:function(scope,el){
+                  $(el).on("focus blur",function(event){
+                      event.stopPropagation()
+                      $(".addinfo").removeClass("show change")
+                      $(this).closest("li").toggleClass("change");
+                      if($(this).closest("li").find(".delete").html() == ""){
+                            $(this).closest("li").find(".delete").html("删除")
+                      }else{
+                          $(this).closest("li").find(".delete").html("")
+                      }
+                  })
+          }
+        }
+    }])
+     mess.directive("colorLi",[function(){
+         return{
+             restrict:"AE",
+             template:'<li ng-class="{show:v==current[0].color}"><span></span></li>',
+             replace:true,
+//             link:function(scope,el){
+//
+//             }
+         }
+     }])
+
+</script>
+</html>
